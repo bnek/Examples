@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import auth from './auth';
 
 export class Home extends Component {
   constructor(props) {
@@ -7,10 +8,12 @@ export class Home extends Component {
   }
 
   fetchWeather() {
-    fetch("/weatherforecast").then(response => {
-      response.json().then(result => {
-        this.setState(result);
-      })
+    auth.getToken().then(accessToken => {
+      fetch("/weatherforecast", { headers: { Authorization: `Bearer ${accessToken}` } }).then(response => {
+        response.json().then(result => {
+          this.setState(result);
+        })
+      });
     });
   }
 
@@ -20,7 +23,7 @@ export class Home extends Component {
       <div>
         <h1>Tomorrow's weather forecast</h1>
         <br />
-        <button onClick={() => this.fetchWeather() }>refresh</button>
+        <button onClick={() => this.fetchWeather()}>refresh</button>
         <br />
         {weather &&
           <div>
